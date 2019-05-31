@@ -13,7 +13,7 @@ def init_argparser():
     parser.add_argument('-f', required=True,  default='',  metavar='path',  type=str,   dest='_FILE', help='.fco file')
     parser.add_argument('-r', required=False, default=0.1, metavar='float', type=float, dest='_STEP', help='DRK plot steps')
     parser.add_argument('-o', required=False, action='store_true',  dest='_OPEN', help='Open pdf on exit')
-    parser.add_argument('-l', required=False, action='store_false',  dest='_PLNK', help='Plot LnK+1')
+    parser.add_argument('-l', required=False, action='store_true',  dest='_PLNK', help='Plot LnK+1')
     # print help if script is run without arguments
     if len(sys.argv) == 1:
         parser.print_help(sys.stderr)
@@ -74,8 +74,6 @@ def main():
             Name, Ic, Io, Is, stl = vals
             x = (Ic-Io)/Is
             osm = stats.probplot(x)[0]
-            print('m ', idx//len(colors))
-            print('c ', idx-idx//len(colors)*len(colors))
             ax.plot(osm[0], osm[1], marker=markers[idx//len(colors)], ls='',
                     color=colors[idx-idx//len(colors)*len(colors)],
                     alpha=0.75, ms=5, markevery=0.01,
