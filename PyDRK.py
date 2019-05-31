@@ -43,13 +43,20 @@ def main():
     path1, fname = os.path.split(flist[0])
     path2, pre_1 = os.path.split(path1)
     path3, pre_2 = os.path.split(path2)
-    pdf_file = pre_2 + pre_1 + '_c.pdf'
+    pdf_file = pre_2 + pre_1 + '.pdf'
     print(pdf_file)
     
     dlist = []
     colors = {0:'#003d73', 1:'#37a0cb', 2:'#00aba4',
               3:'#ee7f00', 4:'#e2007a', 5:'#8bad3f',
               6:'#fabb00', 7:'#655a9f', 8:'#e2001a'}
+    
+    markers = {0:'o', 1:'^', 2:'s', 3:'D', 4:'v'}
+    
+    if len(flist) > len(colors) * len(markers):
+        print('Too many files!')
+        raise SystemExit
+    
     for f in flist:
         data = read_fco(f)
         Ic = data[:,3]
@@ -67,8 +74,11 @@ def main():
             Name, Ic, Io, Is, stl = vals
             x = (Ic-Io)/Is
             osm = stats.probplot(x)[0]
-            ax.plot(osm[0], osm[1], 'o', color=colors[idx],
-                    alpha=0.75, markersize=5, markevery=0.01,
+            print('m ', idx//len(colors))
+            print('c ', idx-idx//len(colors)*len(colors))
+            ax.plot(osm[0], osm[1], marker=markers[idx//len(colors)], ls='',
+                    color=colors[idx-idx//len(colors)*len(colors)],
+                    alpha=0.75, ms=5, markevery=0.01,
                     zorder=3, label=Name)
         ax.plot([xdiag for xdiag in range(-20, 20)],
                 [ydiag for ydiag in range(-20, 20)],
@@ -98,7 +108,9 @@ def main():
                 cond = (stl <= i) & (stl > i-inc)
                 y.append(np.sum(Io[cond])/np.sum(Ic[cond]))
                 x.append(i)
-            ax.plot(x, y, 'o', color=colors[idx], markersize=5, alpha=1.0, zorder=2, label=Name)
+            ax.plot(x, y, marker=markers[idx//len(colors)], ls='',
+                    color=colors[idx-idx//len(colors)*len(colors)],
+                    ms=5, alpha=1.0, zorder=2, label=Name)
         ax.set_xlim([-0.05, max(max_x)+0.05])
         ax.set_ylim([0.8,1.2])
         ax.axhline(0.95, 0.0, color='r', lw=1, alpha=0.5, zorder=1)
@@ -120,7 +132,9 @@ def main():
                 y = np.log(Io/Ic) +1
                 x = stl
                 max_x.append(np.max(stl))
-                ax.plot(x, y, 'o', color=colors[idx], markersize=5, alpha=0.75, zorder=1, label=Name)
+                ax.plot(x, y, marker=markers[idx//len(colors)], ls='',
+                        color=colors[idx-idx//len(colors)*len(colors)],
+                        ms=5, alpha=0.75, zorder=1, label=Name)
             ax.axhline(1.0, 0.0, color='#878787', lw=1, alpha=1.0, zorder=2)
             ax.set_xlim([0.0, max(max_x)+0.05])
             ax.set_xlabel(r'$\mathit{sin(\theta)\ /\ \lambda}$')
