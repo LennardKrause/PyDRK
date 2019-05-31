@@ -22,8 +22,8 @@ def init_argparser():
 
 def read_fco(fname):
     data = np.genfromtxt(fname, skip_header=26, usecols=(0,1,2,3,4,5,6,7))
-    data = data[data[::,7] == 0]
-    return data
+    used = data[data[::,7] == 0]
+    return used
     
 def main():
     mpl.rcParams['figure.figsize'] = [12.60, 7.68]
