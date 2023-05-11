@@ -40,11 +40,9 @@ def main():
     
     _ARGS = init_argparser()
     flist = _ARGS._FILE.split()
-    path1, fname = os.path.split(flist[0])
-    path2, pre_1 = os.path.split(path1)
-    path3, pre_2 = os.path.split(path2)
-    pdf_file = pre_2 + pre_1 + '.pdf'
-    print(pdf_file)
+    pdf_path = os.path.dirname(os.path.abspath(flist[0]))
+    pdf_name = '_'.join(np.asarray(list(map(os.path.splitext, flist)))[:,0])
+    pdf_file = os.path.join(pdf_path, pdf_name + '.pdf')
     
     dlist = []
     colors = {0:'#003d73', 1:'#37a0cb', 2:'#00aba4',
@@ -104,8 +102,9 @@ def main():
             max_x.append(m)
             for i in np.arange(0.0, m, inc):
                 cond = (stl <= i) & (stl > i-inc)
-                y.append(np.sum(Io[cond])/np.sum(Ic[cond]))
-                x.append(i)
+                if np.sum(Ic[cond]) > 0:
+                    y.append(np.sum(Io[cond])/np.sum(Ic[cond]))
+                    x.append(i)
             ax.plot(x, y, marker=markers[idx//len(colors)], ls='',
                     color=colors[idx-idx//len(colors)*len(colors)],
                     ms=5, alpha=1.0, zorder=2, label=Name)
