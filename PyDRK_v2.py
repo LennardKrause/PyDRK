@@ -54,7 +54,7 @@ def read_fco(fname):
                 code = int(line.split()[1])
             elif '_cell_' in line:
                 ucp.append(line.split()[1])
-            elif '_refln_observed_status' in line:
+            elif '_refln_observed_status' in line or '_refln_phase_calc' in line:
                 ucp = list(map(float, ucp))
                 if code > 0 and len(ucp) == 6:
                     break
@@ -67,8 +67,7 @@ def read_fco(fname):
             # _refln_F_squared_sigma
             # _refln_F_calc
             data[:,5] = data[:,5]**2
-            data.swapaxes(5, 3)
-            data.swapaxes(5, 4)
+            data[:, [3,4,5]] = data[:, [5,3,4]]
         if code == 4:
             # _refln_F_squared_calc
             # _refln_F_squared_meas
